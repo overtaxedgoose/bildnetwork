@@ -62,8 +62,11 @@ blocks third-party cookies may not show the sign-in inside the embedded
 frame, every embed also carries an "open it in a new tab" link.
 
 Responses land in each form's Responses tab (and a linked Google Sheet if
-you add one there). To be emailed about new responses, open the form,
-Responses, the three-dot menu, "Get email notifications for new responses".
+you add one there). Email notifications for new responses are switched on
+for the owner, patrick@jajehgroup.com (Responses tab, three-dot menu, "Get
+email notifications for new responses"). The forms cannot be shared with
+bildnetwork@jajehgroup.com until that address is a full Google Workspace
+user; Google refuses to share Forms with groups or aliases.
 
 To point a page at a different form, change its `url` in `tools/forms.json`
 (the responder link, with or without `?embedded=true`), adjust `height` to
