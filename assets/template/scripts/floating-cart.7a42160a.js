@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunknew_bedford_framework||=[]).push([[9528],{96418(e,t,a){a.r(t);var n=a(59440),s=a(16024);const d=e=>{(0,s.A)().then(()=>{const t=(0,n.T)(window,"Y.Squarespace.Singletons.ShoppingCart",null);t&&(t.on("item-added",()=>{e.classList.remove("hidden")}),t.after("load",t=>{t.target.get("totalQuantity")>0&&e.classList.remove("hidden")}))})};a.d(t,["default",0,d])}}]);
+//# sourceMappingURL=https://sourcemaps.squarespace.net/new-bedford-framework/sourcemaps/5d106547937695bbe7a3f03a07cdf484/scripts/floating-cart.7a42160a86f0c10b740c.js.map

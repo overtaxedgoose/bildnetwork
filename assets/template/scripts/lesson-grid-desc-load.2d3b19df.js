@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunknew_bedford_framework||=[]).push([[2519],{94237(e,r,p){p.r(r);const l=e=>{let r=e.innerHTML;r=r.replace(/<p[^>]*>/g,""),r=r.slice(0,-4),r=r.replace(/<\/?p[^>]*>/g,"<br/>"),r="<p>"+r+"</p>",e.innerHTML=r};p.d(r,["default",0,l])}}]);
+//# sourceMappingURL=https://sourcemaps.squarespace.net/new-bedford-framework/sourcemaps/f501948993ffa1e143c750b9f3f6bc6a/scripts/lesson-grid-desc-load.2d3b19df76a78c0f74f1.js.map

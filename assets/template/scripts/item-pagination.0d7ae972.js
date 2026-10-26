@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunknew_bedford_framework||=[]).push([[4583],{64557(e,t,n){n.r(t);const o=e=>{const t=()=>{const t=document.querySelectorAll("main .page-section");if(0===t.length)return;const n=t[t.length-1].dataset.sectionTheme;e.dataset.sectionTheme=n};return t(),{matchLastSectionColorTheme:t}};n.d(t,["default",0,o])}}]);
+//# sourceMappingURL=https://sourcemaps.squarespace.net/new-bedford-framework/sourcemaps/7349bec9761d2b01f1d7f46e85f7ea33/scripts/item-pagination.0d7ae9723c10fc6e2ab9.js.map
