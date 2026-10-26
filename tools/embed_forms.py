@@ -44,11 +44,18 @@ def find_div_end(text, start):
 
 def embed_html(form_id, form):
     name = form.get("name", "Form")
+    url = form["url"].split("?")[0]
+    # The forms require a Google sign-in (that is the spam protection), and a
+    # browser that blocks third-party cookies may not show the sign-in inside
+    # the frame, so always offer a plain link to the form as well.
     return (
         f'<div class="google-form-embed" data-form-id="{form_id}" style="max-width:720px;margin:0 auto;">'
-        f'<iframe src="{form["url"]}" title="{name}" width="100%" height="{form.get("height", 1200)}" '
+        f'<iframe src="{url}?embedded=true" title="{name}" width="100%" height="{form.get("height", 1200)}" '
         f'frameborder="0" marginheight="0" marginwidth="0" loading="lazy" '
-        f'style="display:block;width:100%;border:0;">Loading…</iframe></div>'
+        f'style="display:block;width:100%;border:0;">Loading…</iframe>'
+        f'<p style="text-align:center;font-size:0.85em;margin:1em 0 0;">'
+        f'Trouble seeing the form? <a href="{url}" target="_blank" rel="noopener">Open it in a new tab</a>.'
+        f'</p></div>'
     )
 
 
@@ -69,9 +76,15 @@ def apply(text, forms):
         if not form_id or form_id not in forms:
             continue
         new_inner = embed_html(form_id, forms[form_id])
-        if new_inner == inner:
+        # Strip the attributes that make Squarespace's form component try to
+        # initialise this block (it would throw "Form context script not found").
+        opening = re.sub(r'\s+data-(?:block-scripts|definition-name|website-component-id)="[^"]*"',
+                         "", bm.group(0))
+        if new_inner == inner and opening == bm.group(0):
             continue
-        pieces.append(text[pos:cm.end()])
+        pieces.append(text[pos:bm.start()])
+        pieces.append(opening)
+        pieces.append(text[bm.end():cm.end()])
         pieces.append(new_inner)
         pos = content_end - len("</div>")
         count += 1

@@ -46,17 +46,28 @@ looks for its scripts in the wrong place.
 ## Forms
 
 The DAF and Connect pages originally used Squarespace form blocks, which
-only work on Squarespace. They are replaced by embedded Google Forms.
-`tools/forms.json` maps each Squarespace form id to the Google Form that
-takes its place:
+only work on Squarespace. They are replaced by embedded Google Forms owned
+by patrick@jajehgroup.com. `tools/forms.json` maps each Squarespace form id
+to the Google Form that takes its place:
 
-| Page | Squarespace form | id |
+| Page | Google Form | Replaces Squarespace form id |
 | --- | --- | --- |
-| `daf/` | "DAF Form" (Name, Phone, Email, DAF Goal) | `6791199fc837f91415252c8e` |
-| `connect-with-bild/` | "Enrollment" (Name, Email, Entity Name, Year Established, Industry, Website, Zipcode, Revenue, Project, Interests) | `65a17ec67a678e53eb0fe693` |
+| `daf/` | "DAF Form": Name, Phone, DAF Goal, newsletter opt-in | `6791199fc837f91415252c8e` |
+| `connect-with-bild/` | "Enrollment": Name, Entity Name, Year Established, Industry, Website, Zipcode, Revenue, Project, Interests | `65a17ec67a678e53eb0fe693` |
 
-To point a page at a different form, change its `url` (the form's
-"Send > Embed" link) in `tools/forms.json` and run:
+Both forms collect the respondent's verified Google email, limit each person
+to one response and only accept responses from signed-in Google accounts;
+that sign-in requirement is the spam protection. Because a browser that
+blocks third-party cookies may not show the sign-in inside the embedded
+frame, every embed also carries an "open it in a new tab" link.
+
+Responses land in each form's Responses tab (and a linked Google Sheet if
+you add one there). To be emailed about new responses, open the form,
+Responses, the three-dot menu, "Get email notifications for new responses".
+
+To point a page at a different form, change its `url` in `tools/forms.json`
+(the responder link, with or without `?embedded=true`), adjust `height` to
+the form's length, and run:
 
 ```bash
 python -I -P tools/embed_forms.py .
