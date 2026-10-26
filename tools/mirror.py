@@ -34,8 +34,12 @@ from concurrent.futures import ThreadPoolExecutor
 
 SITE_HOST = "bildnetwork.org"
 SITE = f"https://{SITE_HOST}"
-# Squarespace's own hostname for this site (used for checkout/donate links)
+# Squarespace's own hostname for this site. bildnetwork.org itself now points
+# at GitHub Pages, so the live Squarespace content is crawled from this host;
+# the pages it serves still link to bildnetwork.org, which is what gets
+# rewritten to relative paths.
 SQSP_INTERNAL_HOST = "salmon-blenny-h4hy.squarespace.com"
+SOURCE = f"https://{SQSP_INTERNAL_HOST}"
 ASSET_HOSTS = {
     "images.squarespace-cdn.com",
     "static1.squarespace.com",
@@ -227,7 +231,7 @@ def site_page_path(href):
         u = "https:" + u
     if u.startswith(("http://", "https://")):
         p = urllib.parse.urlsplit(u)
-        if p.netloc.lower() not in (SITE_HOST, "www." + SITE_HOST):
+        if p.netloc.lower() not in (SITE_HOST, "www." + SITE_HOST, SQSP_INTERNAL_HOST):
             return None
         path, query, frag = p.path or "/", p.query, p.fragment
     elif u.startswith("/"):
@@ -257,7 +261,7 @@ class Mirror:
     # ---- phase 1: pages -------------------------------------------------
     def crawl_pages(self):
         queue = ["/"]
-        data, st, _ = fetch(SITE + "/sitemap.xml")
+        data, st, _ = fetch(SOURCE + "/sitemap.xml")
         if data:
             for loc in re.findall(r"<loc>\s*([^<]+?)\s*</loc>", data.decode("utf-8", "replace")):
                 r = site_page_path(loc)
@@ -270,7 +274,7 @@ class Mirror:
             if key in seen:
                 continue
             seen.add(key)
-            data, st, ctype = fetch(SITE + key)
+            data, st, ctype = fetch(SOURCE + key)
             if data is None or st != 200 or "html" not in ctype:
                 log(f"  page {key}: status {st} ({ctype}) - skipped")
                 continue
@@ -283,7 +287,7 @@ class Mirror:
                 if r and (r[0].rstrip("/") or "/") not in seen:
                     queue.append(r[0])
         # Squarespace's custom 404 page, served by GitHub Pages as 404.html
-        data, st, ctype = fetch(SITE + "/this-page-does-not-exist-404-probe")
+        data, st, ctype = fetch(SOURCE + "/this-page-does-not-exist-404-probe")
         if data and st == 404 and "html" in ctype:
             self.pages["/404"] = data.decode("utf-8", "replace")
             self.page_file["/404"] = "404.html"
@@ -319,7 +323,9 @@ class Mirror:
         log(f"  downloading {len(urls)} assets ...")
 
         def one(u):
-            data, st, ctype = fetch(u)
+            # files uploaded to the site (/s/...) live on the Squarespace host
+            src = SOURCE + u[len(SITE):] if u.startswith(SITE + "/") else u
+            data, st, ctype = fetch(src)
             return u, data, st, ctype
 
         new = []
@@ -452,6 +458,11 @@ class Mirror:
                                   ).encode("utf-8")
             self.write(local, data)
         self.write(".nojekyll", b"")
+        # Swap the Squarespace form blocks for the Google Forms listed in
+        # tools/forms.json (this script runs with -P, so import explicitly).
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import embed_forms
+        log(f"Embedded Google Forms in {embed_forms.run(self.out)} page(s).")
 
 
 def main():
