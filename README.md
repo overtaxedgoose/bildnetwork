@@ -90,6 +90,14 @@ python -I -P tools/mirror.py .
 It re-crawls the sitemap and every internal link, downloads all assets again,
 rewrites the pages and re-applies the Google Forms. Commit the result.
 
+Be aware that a refresh overwrites every page with the Squarespace version,
+so edits made directly in this repository are lost. Edits made so far:
+
+- Home page hero (`index.html` and `home/index.html`): headline changed from
+  "/bild/ invests in communities" to "/bild/ backs local businesses with
+  loans, loan guarantees and technical assistance", with a descriptive
+  subline under it and a phone-only headline size rule.
+
 ## Domain and DNS
 
 The domain is registered at Namecheap. `bildnetwork.org` points at GitHub
